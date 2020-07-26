@@ -1,13 +1,53 @@
 import { Fragment } from "react";
 
-function CollectionIcon({ image_url, name }) {
-  if (image_url)
+const Down = ({ size = 24 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+);
+
+const Right = ({ size = 24 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9 18l6-6-6-6" />
+  </svg>
+);
+
+function CollectionIcon({ large = false, image_url, large_image_url, name }) {
+  if (image_url || large_image_url)
     return (
       <Fragment>
-        <img className="collection-image" src={image_url} alt={name} />
+        <img
+          alt={name}
+          async
+          className="collection-image"
+          decoding="async"
+          loading="lazy"
+          importance="low"
+          src={large ? large_image_url : image_url}
+          height={large ? 72 : 40}
+          width={large ? 72 : 40}
+        />
         <style jsx>{`
           .collection-image {
-            --size: 40px;
+            --size: ${large ? 72 : 40}px;
 
             display: block;
             border-radius: 99999px;
@@ -24,9 +64,9 @@ function CollectionIcon({ image_url, name }) {
     <div className="collection-image-fallback">
       <style jsx>{`
         .collection-image-fallback {
-          --size: 40px;
+          --size: ${large ? 72 : 40}px;
 
-          background-color: #fff;
+          background-color: #242424;
           border-radius: 99999px;
           height: var(--size);
           width: var(--size);
@@ -41,8 +81,11 @@ function CollectionIcon({ image_url, name }) {
 export default function Collection(props) {
   return (
     <div>
-      <CollectionIcon image_url={props.image_url} name={props.name} />
+      <CollectionIcon {...props} />
       <p className="collection-title">{props.name}</p>
+      <span>
+        <Right />
+      </span>
       <style jsx>{`
         div {
           display: flex;
@@ -53,6 +96,11 @@ export default function Collection(props) {
           margin: 0;
           margin-left: 0.5em;
           font-size: 1.125rem;
+          font-weight: 500;
+        }
+
+        span {
+          margin-left: auto;
         }
       `}</style>
     </div>

@@ -18,7 +18,7 @@ export default function Collections({ data }) {
         }
 
         li:not(:last-of-type) {
-          margin-bottom: 0.5rem;
+          margin-bottom: 1rem;
         }
       `}</style>
     </ul>

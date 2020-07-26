@@ -6,6 +6,36 @@ import { ADDRESS } from "../../utils";
 import Link from "next/link";
 import Head from "next/head";
 
+const Spinner = ({ size = 24 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0 12 12"
+        to="360 12 12"
+        dur="1s"
+        repeatCount="indefinite"
+      />
+    </path>
+    <style jsx>{`
+      svg {
+        vertical-align: middle;
+        margin: 0 auto;
+      }
+    `}</style>
+  </svg>
+);
+
 export async function getStaticPaths() {
   return { paths: [], fallback: true };
 }
@@ -16,7 +46,9 @@ export async function getStaticProps({ params }) {
   if (!ADDRESS.test(address)) {
     return {
       unstable_revalidate: 60,
-      props: {},
+      props: {
+        address,
+      },
     };
   }
 
@@ -25,20 +57,27 @@ export async function getStaticProps({ params }) {
 
     return {
       unstable_revalidate: 60,
-      props: collections ? { collections } : {},
+      props: collections
+        ? {
+            collections,
+            address,
+          }
+        : {},
     };
   } catch (error) {
     console.error(error);
 
     return {
       unstable_revalidate: 60,
-      props: {},
+      props: {
+        address,
+      },
     };
   }
 }
 
-export default function Gallery({ collections }) {
-  const { isFallback } = useRouter();
+export default function Gallery({ address, collections }) {
+  const { isFallback, query } = useRouter();
 
   if (!isFallback && !collections) {
     return <Error statusCode={404} title="This address could not be found" />;
@@ -58,7 +97,9 @@ export default function Gallery({ collections }) {
           </Link>
         </h1>
 
-        {isFallback ? <p>Loading...</p> : <Collections data={collections} />}
+        <p>{query.address ?? address}</p>
+
+        {isFallback ? <Spinner /> : <Collections data={collections} />}
       </main>
 
       <footer>
@@ -82,13 +123,20 @@ export default function Gallery({ collections }) {
           align-items: center;
         }
 
+        p {
+          text-align: center;
+          font-size: 1.125rem;
+          font-weight: 500;
+          margin-top: 0;
+          margin-bottom: 4rem;
+        }
+
         main {
           padding: 5rem 0;
           flex: 1;
           display: flex;
           flex-direction: column;
           justify-content: center;
-          align-items: center;
         }
 
         footer {
@@ -127,8 +175,8 @@ export default function Gallery({ collections }) {
         }
 
         .title {
-          margin: 0 0 1em 0;
-          line-height: 1.15;
+          margin: 0 0 2rem 0;
+          line-height: 1;
           font-size: 4rem;
         }
 
