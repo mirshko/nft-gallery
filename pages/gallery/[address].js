@@ -46,9 +46,7 @@ export async function getStaticProps({ params }) {
   if (!ADDRESS.test(address)) {
     return {
       unstable_revalidate: 1,
-      props: {
-        address,
-      },
+      props: {},
     };
   }
 
@@ -57,26 +55,19 @@ export async function getStaticProps({ params }) {
 
     return {
       unstable_revalidate: 1,
-      props: collections
-        ? {
-            collections,
-            address,
-          }
-        : {},
+      props: collections ? { collections } : {},
     };
   } catch (error) {
     console.error(error);
 
     return {
       unstable_revalidate: 1,
-      props: {
-        address,
-      },
+      props: {},
     };
   }
 }
 
-export default function Gallery({ address, collections }) {
+export default function Gallery({ collections }) {
   const { isFallback, query } = useRouter();
 
   if (!isFallback && !collections) {
@@ -97,7 +88,7 @@ export default function Gallery({ address, collections }) {
           </Link>
         </h1>
 
-        <p>{shortenHex(query.address ?? address, 6)}</p>
+        <p>{shortenHex(query.address, 6)}</p>
 
         {isFallback ? <Spinner /> : <Collections data={collections} />}
       </main>
