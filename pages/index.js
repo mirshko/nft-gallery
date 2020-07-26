@@ -4,7 +4,9 @@ import { useRouter } from "next/router";
 
 export default function Home() {
   const { replace } = useRouter();
-  const { handleSubmit, register } = useForm();
+  const { handleSubmit, register, formState } = useForm();
+
+  const { isSubmitting } = formState;
 
   const onSubmit = async (data) => {
     const { address } = data;
@@ -24,13 +26,16 @@ export default function Home() {
 
         <form onSubmit={handleSubmit(onSubmit)} action="POST">
           <input
-            name="address"
+            disabled={isSubmitting}
             id="address"
-            type="text"
+            name="address"
             placeholder="ETH Address"
             ref={register({ required: true })}
+            type="text"
           />
-          <button type="submit">Go</button>
+          <button disabled={isSubmitting} type="submit">
+            {isSubmitting ? "Going" : "Go"}
+          </button>
         </form>
       </main>
 
