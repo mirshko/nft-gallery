@@ -84,9 +84,7 @@ export default function Gallery({ collections }) {
       <main>
         <h1 className="title">
           <Link href="/">
-            <a>
-              {isFallback ? "Static NFT Gallery" : shortenHex(query.address)}
-            </a>
+            <a>{isFallback ? "Loading" : shortenHex(query.address)}</a>
           </Link>
         </h1>
 
