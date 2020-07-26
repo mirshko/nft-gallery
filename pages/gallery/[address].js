@@ -2,7 +2,7 @@ import Error from "next/error";
 import { useRouter } from "next/router";
 import Collections from "../../components/collections";
 import fetchCollections from "../../lib/fetchCollections";
-import { ADDRESS } from "../../utils";
+import { ADDRESS, shortenHex } from "../../utils";
 import Link from "next/link";
 import Head from "next/head";
 
@@ -45,7 +45,7 @@ export async function getStaticProps({ params }) {
 
   if (!ADDRESS.test(address)) {
     return {
-      unstable_revalidate: 60,
+      unstable_revalidate: 1,
       props: {
         address,
       },
@@ -56,7 +56,7 @@ export async function getStaticProps({ params }) {
     const collections = await fetchCollections(address);
 
     return {
-      unstable_revalidate: 60,
+      unstable_revalidate: 1,
       props: collections
         ? {
             collections,
@@ -68,7 +68,7 @@ export async function getStaticProps({ params }) {
     console.error(error);
 
     return {
-      unstable_revalidate: 60,
+      unstable_revalidate: 1,
       props: {
         address,
       },
@@ -97,7 +97,7 @@ export default function Gallery({ address, collections }) {
           </Link>
         </h1>
 
-        <p>{query.address ?? address}</p>
+        <p>{shortenHex(query.address ?? address, 6)}</p>
 
         {isFallback ? <Spinner /> : <Collections data={collections} />}
       </main>
@@ -136,7 +136,6 @@ export default function Gallery({ address, collections }) {
           flex: 1;
           display: flex;
           flex-direction: column;
-          justify-content: center;
         }
 
         footer {
@@ -164,7 +163,6 @@ export default function Gallery({ address, collections }) {
         }
 
         .title a {
-          color: #0070f3;
           text-decoration: none;
         }
 

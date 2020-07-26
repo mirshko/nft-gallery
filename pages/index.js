@@ -1,17 +1,18 @@
 import Head from "next/head";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import { ADDRESS } from "../utils";
 
 export default function Home() {
-  const { replace } = useRouter();
-  const { handleSubmit, register, formState } = useForm();
+  const { push } = useRouter();
+  const { handleSubmit, register, formState, errors } = useForm();
 
   const { isSubmitting } = formState;
 
   const onSubmit = async (data) => {
     const { address } = data;
 
-    await replace("/gallery/[address]", `/gallery/${address}`);
+    await push("/gallery/[address]", `/gallery/${address}`);
   };
 
   return (
@@ -25,17 +26,37 @@ export default function Home() {
         <h1 className="title">Static NFT Gallery</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} action="POST">
-          <input
-            disabled={isSubmitting}
-            id="address"
-            name="address"
-            placeholder="ETH Address"
-            ref={register({ required: true })}
-            type="text"
-          />
-          <button disabled={isSubmitting} type="submit">
-            {isSubmitting ? "Going" : "Go"}
-          </button>
+          <div className="flex">
+            <input
+              disabled={isSubmitting}
+              id="address"
+              name="address"
+              placeholder="Your Ethereum Address"
+              aria-describedby="address-error-message"
+              aria-invalid={errors.address ? "true" : "false"}
+              ref={register({
+                required: {
+                  value: true,
+                  message: "Please enter an address",
+                },
+                pattern: {
+                  value: ADDRESS,
+                  message: "Please enter a valid address",
+                },
+              })}
+              type="text"
+            />
+
+            <button disabled={isSubmitting} type="submit">
+              {isSubmitting ? "Going" : "Go"}
+            </button>
+          </div>
+
+          {errors && (
+            <p role="alert" id="address-error-message" className="error">
+              {errors.address?.message}
+            </p>
+          )}
         </form>
       </main>
 
@@ -49,6 +70,68 @@ export default function Home() {
           <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
         </a>
       </footer>
+
+      <style jsx>{`
+        form {
+          max-width: 400px;
+          margin: 0 auto;
+        }
+
+        .flex {
+          display: flex;
+        }
+
+        .error {
+          color: #f5a623;
+          text-align: center;
+        }
+
+        input {
+          border-radius: 20px;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+          border: 3px solid #eaeaea;
+          border-right: 0;
+          flex: 4;
+          font-size: 1.125rem;
+          line-height: 1.25;
+          min-width: 256px;
+          outline: none;
+          overflow: hidden;
+          padding: 1rem 0.5rem 1rem 1.5rem;
+          text-overflow: ellipsis;
+        }
+
+        input::placeholder {
+          color: hsl(0deg 0% 62%);
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+            sans-serif;
+        }
+
+        input:focus {
+          border-color: #000;
+          box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+
+        button {
+          background-color: black;
+          border-radius: 20px;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          border: 3px solid transparent;
+          color: #eaeaea;
+          flex: 1;
+          font-size: 1.125rem;
+          font-weight: 500;
+          line-height: 1.25;
+          outline: none;
+          padding: 1rem 2rem 1rem 1.75rem;
+        }
+        button:focus {
+          box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+      `}</style>
 
       <style jsx global>{`
         .container {
@@ -65,8 +148,6 @@ export default function Home() {
           flex: 1;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
         }
 
         footer {
@@ -105,8 +186,8 @@ export default function Home() {
         }
 
         .title {
-          margin: 0 0 1em 0;
-          line-height: 1.15;
+          margin: 0 0 4rem 0;
+          line-height: 1;
           font-size: 4rem;
         }
 
