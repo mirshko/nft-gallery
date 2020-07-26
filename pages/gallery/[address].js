@@ -105,7 +105,7 @@ export default function Gallery({ collections }) {
       <style jsx global>{`
         .container {
           min-height: 100vh;
-          padding: 0 0.5rem;
+          padding: 0 20px;
           display: flex;
           flex-direction: column;
         }
