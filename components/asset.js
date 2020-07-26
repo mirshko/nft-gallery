@@ -1,11 +1,13 @@
+import { useState } from "react";
+import { Dialog, DialogOverlay, DialogContent } from "@reach/dialog";
+
 export default function Asset(props) {
+  const [showDialog, setShowDialog] = useState(false);
+  const open = () => setShowDialog(true);
+  const close = () => setShowDialog(false);
+
   return (
-    <a
-      href={props.permalink}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="aspect-ratio-box"
-    >
+    <button className="aspect-ratio-box" onClick={open}>
       <img
         className="aspect-ratio-box-inside"
         src={props.image_url}
@@ -15,10 +17,64 @@ export default function Asset(props) {
         loading="lazy"
         importance="low"
       />
+
+      <Dialog isOpen={showDialog} onDismiss={close}>
+        <img
+          className="dialog-image"
+          async
+          decoding="async"
+          importance="high"
+          src={props.image_original_url ?? props.image_url}
+          alt={props.name}
+        />
+      </Dialog>
+
+      <style jsx global>{`
+        :root {
+          --reach-dialog: 1;
+        }
+
+        [data-reach-dialog-overlay] {
+          background: hsla(0, 0%, 0%, 0.33);
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          overflow: auto;
+        }
+
+        [data-reach-dialog-content] {
+          max-width: 560px;
+          width: max-content;
+          margin: 3rem auto 0 auto;
+          background-color: #${props.background_color ?? "ffffff"};
+          border-radius: 20px;
+          padding: 1rem;
+          box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
+          outline: none;
+        }
+
+        .dialog-image {
+          max-width: 100%;
+          height: auto;
+          vertical-align: middle;
+          border-radius: 6px;
+        }
+      `}</style>
+
       <style jsx>{`
         img {
           object-fit: cover;
           object-position: center;
+        }
+
+        button {
+          padding: 0;
+          font: inherit;
+          border: none;
+          width: 100%;
+          outline: none;
         }
 
         .aspect-ratio-box {
@@ -26,10 +82,9 @@ export default function Asset(props) {
           display: block;
           overflow: hidden;
           padding-top: 100%;
-          background-color: #${props.background_color ?? "fff"};
+          background-color: #${props.background_color ?? "ffffff"};
           position: relative;
-          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.02),
-            0 1px 3px rgba(0, 0, 0, 0.04);
+          box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
           border-radius: 20px;
         }
         .aspect-ratio-box-inside {
@@ -40,6 +95,6 @@ export default function Asset(props) {
           height: 100%;
         }
       `}</style>
-    </a>
+    </button>
   );
 }
