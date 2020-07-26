@@ -1,10 +1,11 @@
 import Error from "next/error";
+import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import Collections from "../../components/collections";
+import fetchAssets from "../../lib/fetchAssets";
 import fetchCollections from "../../lib/fetchCollections";
 import { ADDRESS, shortenHex } from "../../utils";
-import Link from "next/link";
-import Head from "next/head";
 
 const Spinner = ({ size = 24 }) => (
   <svg
@@ -51,7 +52,14 @@ export async function getStaticProps({ params }) {
   }
 
   try {
-    const collections = await fetchCollections(address);
+    const allCollections = await fetchCollections(address);
+
+    const collections = await Promise.all(
+      allCollections.map(async (collection) => ({
+        ...collection,
+        assets: await fetchAssets(address, collection.slug),
+      }))
+    );
 
     return {
       unstable_revalidate: 1,
@@ -88,7 +96,7 @@ export default function Gallery({ collections }) {
           </Link>
         </h1>
 
-        {isFallback ? <Spinner /> : <Collections data={collections} />}
+        {isFallback ? <Spinner /> : <Collections collections={collections} />}
       </main>
 
       <footer>
