@@ -42,12 +42,12 @@ function CollectionIcon({ large = false, image_url, large_image_url, name }) {
           loading="lazy"
           importance="low"
           src={large ? large_image_url : image_url}
-          height={large ? 60 : 30}
-          width={large ? 60 : 30}
+          height={large ? 72 : 32}
+          width={large ? 72 : 32}
         />
         <style jsx>{`
           .collection-image {
-            --size: ${large ? 60 : 30}px;
+            --size: ${large ? 72 : 32}px;
 
             display: block;
             border-radius: 99999px;
@@ -64,7 +64,7 @@ function CollectionIcon({ large = false, image_url, large_image_url, name }) {
     <div className="collection-image-fallback">
       <style jsx>{`
         .collection-image-fallback {
-          --size: ${large ? 60 : 30}px;
+          --size: ${large ? 72 : 32}px;
 
           background-color: #242424;
           border-radius: 99999px;

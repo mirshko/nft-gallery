@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogOverlay, DialogContent } from "@reach/dialog";
+import { Dialog } from "@reach/dialog";
 
 export default function Asset(props) {
   const [showDialog, setShowDialog] = useState(false);

@@ -92,7 +92,7 @@ export default function Gallery({ collections }) {
       <main>
         <h1 className="title">
           <Link href="/">
-            <a>{isFallback ? "Loading" : shortenHex(query.address)}</a>
+            <a>{isFallback ? "Loading" : "Static NFT Gallery"}</a>
           </Link>
         </h1>
 
@@ -130,6 +130,8 @@ export default function Gallery({ collections }) {
           height: 100px;
           border-top: 1px solid #eaeaea;
           display: flex;
+          font-weight: 600;
+          letter-spacing: 0.01em;
           justify-content: center;
           align-items: center;
         }
@@ -149,24 +151,10 @@ export default function Gallery({ collections }) {
           text-decoration: none;
         }
 
-        .title a {
-          text-decoration: none;
-        }
-
-        .title a:hover,
-        .title a:focus,
-        .title a:active {
-          text-decoration: underline;
-        }
-
         .title {
           margin: 0 0 4rem 0;
           line-height: 1;
           font-size: 4rem;
-        }
-
-        .title,
-        .description {
           text-align: center;
         }
 
