@@ -1,16 +1,45 @@
-import Head from "next/head";
-import { useForm } from "react-hook-form";
+import Error from "next/error";
 import { useRouter } from "next/router";
+import Collections from "../../components/collections";
+import fetchCollections from "../../lib/fetchCollections";
+import { ADDRESS } from "../../utils";
+import Link from "next/link";
+import Head from "next/head";
 
-export default function Home() {
-  const { replace } = useRouter();
-  const { handleSubmit, register } = useForm();
+export async function getStaticPaths() {
+  return { paths: [], fallback: true };
+}
 
-  const onSubmit = async (data) => {
-    const { address } = data;
+export async function getStaticProps({ params }) {
+  const { address } = params;
 
-    await replace("/gallery/[address]", `/gallery/${address}`);
-  };
+  if (!ADDRESS.test(address)) {
+    return {
+      props: {},
+    };
+  }
+
+  try {
+    const collections = await fetchCollections(address);
+
+    return {
+      props: collections ? { collections } : {},
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      props: {},
+    };
+  }
+}
+
+export default function Gallery({ collections }) {
+  const { isFallback } = useRouter();
+
+  if (!isFallback && !collections) {
+    return <Error statusCode={404} title="This address could not be found" />;
+  }
 
   return (
     <div className="container">
@@ -20,18 +49,13 @@ export default function Home() {
       </Head>
 
       <main>
-        <h1 className="title">Static NFT Gallery</h1>
+        <h1 className="title">
+          <Link href="/">
+            <a>Static NFT Gallery</a>
+          </Link>
+        </h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} action="POST">
-          <input
-            name="address"
-            id="address"
-            type="text"
-            placeholder="ETH Address"
-            ref={register({ required: true })}
-          />
-          <button type="submit">Go</button>
-        </form>
+        {isFallback ? <p>Loading...</p> : <Collections data={collections} />}
       </main>
 
       <footer>
