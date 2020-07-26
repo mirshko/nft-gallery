@@ -19,14 +19,20 @@ export default function Asset(props) {
       />
 
       <Dialog isOpen={showDialog} onDismiss={close}>
-        <img
-          className="dialog-image"
-          async
-          decoding="async"
-          importance="high"
-          src={props.image_original_url ?? props.image_url}
-          alt={props.name}
-        />
+        <a
+          href={props.image_original_url ?? props.image_url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            className="dialog-image"
+            async
+            decoding="async"
+            importance="high"
+            src={props.image_url}
+            alt={props.name}
+          />
+        </a>
       </Dialog>
 
       <style jsx global>{`
@@ -45,12 +51,12 @@ export default function Asset(props) {
         }
 
         [data-reach-dialog-content] {
-          max-width: 560px;
+          max-width: calc(375px - (20px * 2));
           width: max-content;
-          margin: 3rem auto 0 auto;
+          margin: 20vh auto 0 auto;
           background-color: #${props.background_color ?? "ffffff"};
           border-radius: 20px;
-          padding: 1rem;
+          padding: 0.5rem;
           box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
           outline: none;
         }
@@ -59,7 +65,7 @@ export default function Asset(props) {
           max-width: 100%;
           height: auto;
           vertical-align: middle;
-          border-radius: 6px;
+          border-radius: 12px;
         }
       `}</style>
 
