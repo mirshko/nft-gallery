@@ -42,12 +42,12 @@ function CollectionIcon({ large = false, image_url, large_image_url, name }) {
           loading="lazy"
           importance="low"
           src={large ? large_image_url : image_url}
-          height={large ? 72 : 40}
-          width={large ? 72 : 40}
+          height={large ? 60 : 30}
+          width={large ? 60 : 30}
         />
         <style jsx>{`
           .collection-image {
-            --size: ${large ? 72 : 40}px;
+            --size: ${large ? 60 : 30}px;
 
             display: block;
             border-radius: 99999px;
@@ -64,7 +64,7 @@ function CollectionIcon({ large = false, image_url, large_image_url, name }) {
     <div className="collection-image-fallback">
       <style jsx>{`
         .collection-image-fallback {
-          --size: ${large ? 72 : 40}px;
+          --size: ${large ? 60 : 30}px;
 
           background-color: #242424;
           border-radius: 99999px;
@@ -95,7 +95,8 @@ export default function Collection(props) {
         .collection-title {
           margin: 0;
           margin-left: 0.5em;
-          font-size: 1.125rem;
+          font-size: 1rem;
+          line-height: 1.5;
           font-weight: 500;
         }
 

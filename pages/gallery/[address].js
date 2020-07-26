@@ -84,11 +84,11 @@ export default function Gallery({ collections }) {
       <main>
         <h1 className="title">
           <Link href="/">
-            <a>Static NFT Gallery</a>
+            <a>
+              {isFallback ? "Static NFT Gallery" : shortenHex(query.address)}
+            </a>
           </Link>
         </h1>
-
-        <p>{shortenHex(query.address, 6)}</p>
 
         {isFallback ? <Spinner /> : <Collections data={collections} />}
       </main>
@@ -110,16 +110,6 @@ export default function Gallery({ collections }) {
           padding: 0 0.5rem;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        p {
-          text-align: center;
-          font-size: 1.125rem;
-          font-weight: 500;
-          margin-top: 0;
-          margin-bottom: 4rem;
         }
 
         main {
@@ -164,7 +154,7 @@ export default function Gallery({ collections }) {
         }
 
         .title {
-          margin: 0 0 2rem 0;
+          margin: 0 0 4rem 0;
           line-height: 1;
           font-size: 4rem;
         }

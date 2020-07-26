@@ -14,7 +14,9 @@ export default function Collections({ data }) {
         ul {
           list-style: none;
           padding-left: 0;
-          margin: 0;
+          margin: 0 auto;
+          max-width: 425px;
+          width: 100%;
         }
 
         li:not(:last-of-type) {

@@ -73,7 +73,8 @@ export default function Home() {
 
       <style jsx>{`
         form {
-          max-width: 400px;
+          max-width: 425px;
+          width: 100%;
           margin: 0 auto;
         }
 
@@ -139,8 +140,6 @@ export default function Home() {
           padding: 0 0.5rem;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
         }
 
         main {
