@@ -53,8 +53,7 @@ function CollectionIcon({ large = false, image_url, large_image_url, name }) {
             border-radius: 99999px;
             height: var(--size);
             width: var(--size);
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.04),
-              0 1px 3px rgba(0, 0, 0, 0.08);
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.08);
           }
         `}</style>
       </Fragment>
@@ -80,15 +79,42 @@ function CollectionIcon({ large = false, image_url, large_image_url, name }) {
 
 export default function Collection(props) {
   return (
-    <div>
+    <button onClick={props.toggle}>
       <CollectionIcon {...props} />
       <p className="collection-title">{props.name}</p>
-      <span>
-        <Right />
-      </span>
+      <div className="ml-auto">
+        {props.isOpen ? (
+          <Down />
+        ) : (
+          <div className="count-with-arrow">
+            <div className="count">{props.assets.length}</div>
+            <Right />
+          </div>
+        )}
+      </div>
+
       <style jsx>{`
-        div {
+        .ml-auto {
+          margin-left: auto;
+        }
+
+        .count-with-arrow {
           display: flex;
+          align-items: center;
+        }
+
+        .count {
+          margin-right: 0.05em;
+        }
+
+        button {
+          padding: 0;
+          font: inherit;
+          border: none;
+          background: transparent;
+          width: 100%;
+          display: flex;
+          outline: none;
           align-items: center;
         }
 
@@ -104,6 +130,6 @@ export default function Collection(props) {
           margin-left: auto;
         }
       `}</style>
-    </div>
+    </button>
   );
 }

@@ -1,13 +1,28 @@
 import Collection from "./collection";
+import Assets from "./assets";
+import { Fragment, useState } from "react";
 
-export default function Collections({ data }) {
-  if (!data.length) return null;
+function CollectionWrapper(props) {
+  const [isOpen, isOpenSet] = useState(false);
+
+  const toggle = () => isOpenSet(!isOpen);
+
+  return (
+    <Fragment>
+      <Collection isOpen={isOpen} toggle={toggle} {...props} />
+      {isOpen && <Assets assets={props.assets} />}
+    </Fragment>
+  );
+}
+
+export default function Collections({ collections }) {
+  if (!collections.length) return null;
 
   return (
     <ul>
-      {data.map((datum, i) => (
+      {collections.map((collection, i) => (
         <li key={i}>
-          <Collection {...datum} />
+          <CollectionWrapper {...collection} />
         </li>
       ))}
       <style jsx>{`
