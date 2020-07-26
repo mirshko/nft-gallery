@@ -15,6 +15,7 @@ export async function getStaticProps({ params }) {
 
   if (!ADDRESS.test(address)) {
     return {
+      unstable_revalidate: 60,
       props: {},
     };
   }
@@ -23,12 +24,14 @@ export async function getStaticProps({ params }) {
     const collections = await fetchCollections(address);
 
     return {
+      unstable_revalidate: 60,
       props: collections ? { collections } : {},
     };
   } catch (error) {
     console.error(error);
 
     return {
+      unstable_revalidate: 60,
       props: {},
     };
   }
