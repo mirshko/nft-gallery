@@ -7,11 +7,23 @@
     "build": "next build",
     "start": "next start"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
   "dependencies": {
     "@reach/dialog": "^0.10.5",
     "next": "9.4.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-hook-form": "^6.1.0"
+    "react-hook-form": "^6.1.0",
+    "tailwindcss": "^1.6.0"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "postcss-preset-env": "^6.7.0",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1"
   }
 }
