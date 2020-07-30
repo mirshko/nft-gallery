@@ -1,11 +1,10 @@
 import Error from "next/error";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import Collections from "../../components/collections";
-import fetchAssets from "../../lib/fetchAssets";
-import fetchCollections from "../../lib/fetchCollections";
-import { ADDRESS, shortenHex } from "../../utils";
+import getOpenSeaData from "../../lib/getOpenSeaData";
+import { ADDRESS } from "../../utils";
+import { Fragment } from "react";
 
 const Spinner = ({ size = 24 }) => (
   <svg
@@ -46,135 +45,102 @@ export async function getStaticProps({ params }) {
 
   if (!ADDRESS.test(address)) {
     return {
-      unstable_revalidate: 1,
+      revalidate: 1,
       props: {},
     };
   }
 
   try {
-    const allCollections = await fetchCollections(address);
-
-    const collections = await Promise.all(
-      allCollections.map(async (collection) => ({
-        ...collection,
-        assets: await fetchAssets(address, collection.slug),
-      }))
-    );
-
     return {
-      unstable_revalidate: 1,
-      props: collections ? { collections } : {},
+      revalidate: 1,
+      props: await getOpenSeaData(address),
     };
   } catch (error) {
     console.error(error);
 
     return {
-      unstable_revalidate: 1,
+      revalidate: 1,
       props: {},
     };
   }
 }
 
-export default function Gallery({ collections }) {
-  const { isFallback, query } = useRouter();
+export default function Gallery({ data }) {
+  const { isFallback } = useRouter();
 
-  if (!isFallback && !collections) {
+  if (!isFallback && !data) {
     return <Error statusCode={404} title="This address could not be found" />;
   }
 
+  if (isFallback)
+    return (
+      <main>
+        <Head>
+          <title>Static NFT Gallery</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <Spinner />
+      </main>
+    );
+
   return (
-    <div className="container">
+    <div className="m-6 lg:flex lg:space-x-6">
       <Head>
         <title>Static NFT Gallery</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <h1 className="title">
-          <Link href="/">
-            <a>{isFallback ? "Loading" : "Static NFT Gallery"}</a>
-          </Link>
-        </h1>
+      <aside className="lg:w-1/4 mb-6 lg:mb-0">
+        <div className="p-3 rounded-2xl bg-gray-900 text-white">
+          <ul
+            className="space-y-3 rounded-xl overflow-scroll scrolling-touch"
+            style={{ maxHeight: "50vh" }}
+          >
+            {data.map((collection, i) => (
+              <li key={i}>
+                <a
+                  className="p-5 rounded-xl bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 outline-none transition-color duration-150 leading-none tracking-wide whitespace-no-wrap flex justify-between"
+                  href={`#${collection.name}`}
+                >
+                  <p>{collection.name}</p>
+                  <p className="ml-4">{collection.assets.length}</p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
 
-        {isFallback ? <Spinner /> : <Collections collections={collections} />}
+      <main className="flex-1">
+        <ul>
+          {data.map(({ name, assets }, i) => (
+            <li id={name} key={i} className="mb-12">
+              <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {assets.map((asset, j) => (
+                  <li
+                    key={j}
+                    className="self-start bg-gray-100 rounded-xl p-2"
+                    style={{
+                      boxShadow: "inset 0 0 0 1px rgba(26, 32, 44, 0.1)",
+                      backgroundColor:
+                        asset.background_color === "000000"
+                          ? ""
+                          : `#${asset.background_color}`,
+                    }}
+                  >
+                    <img
+                      src={asset.image_url}
+                      alt={asset.name}
+                      style={{ borderRadius: "0.625rem" }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
       </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
-        </a>
-      </footer>
-
-      <style jsx global>{`
-        .container {
-          min-height: 100vh;
-          padding: 0 20px;
-          display: flex;
-          flex-direction: column;
-        }
-
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          font-weight: 600;
-          letter-spacing: 0.01em;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer img {
-          margin-left: 0.5rem;
-        }
-
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        a {
-          color: inherit;
-          text-decoration: none;
-        }
-
-        .title {
-          margin: 0 0 4rem 0;
-          line-height: 1;
-          font-size: 4rem;
-          text-align: center;
-        }
-
-        .logo {
-          height: 1em;
-        }
-
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
-        }
-
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
     </div>
   );
 }
